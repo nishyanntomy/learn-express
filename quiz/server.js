@@ -51,6 +51,26 @@ app.post('/write/adduser', (req, res) => {
   res.send('done');
 })
 
+app.use('/read/username/:name', addMsgToRequest);
+
+app.get('/read/username/:name', (req, res) => {
+  const usernameToSearch = req.params.name;
+  const foundUser = req.users.find(user => user.username === usernameToSearch);
+
+  if (foundUser) {
+    const userWithEmail = {
+      id: foundUser.id,
+      username: foundUser.username,
+      email: foundUser.email
+    };
+    res.send(userWithEmail);
+  } else {
+    res.status(404).json({
+      error: { message: 'User not found', status: 404 }
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
